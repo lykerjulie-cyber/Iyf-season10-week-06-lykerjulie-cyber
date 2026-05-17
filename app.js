@@ -56,3 +56,80 @@ if (form) {
         console.log("Form works! City:", cityInput.value);
     });
 }
+// ========== WEATHER DASHBOARD LOGIC ==========
+
+const form = document.getElementById("search-form");
+const cityInput = document.getElementById("city-input");
+const loading = document.getElementById("loading");
+const error = document.getElementById("error");
+const weatherDisplay = document.getElementById("weather-display");
+
+// Elements to update
+const cityName = document.getElementById("city-name");
+const weatherIcon = document.getElementById("weather-icon");
+const temperature = document.getElementById("temperature");
+const description = document.getElementById("description");
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const city = cityInput.value.trim();
+    if (city) {
+        getWeather(city);
+    }
+});
+
+async function getWeather(city) {
+    const url = `${BASE_URL}?q=${city}&appid=${API_KEY}&units=metric`;
+
+    try {
+        showLoading();
+        hideError();
+        weatherDisplay.classList.add("hidden");
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error("City not found. Check spelling");
+            }
+            throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        displayWeather(data);
+
+    } catch (err) {
+        showError(err.message);
+        console.error(err);
+    } finally {
+        hideLoading();
+    }
+}
+
+function displayWeather(data) {
+    cityName.textContent = `${data.name}, ${data.sys.country}`;
+    weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+    weatherIcon.alt = data.weather[0].description;
+    temperature.textContent = `${Math.round(data.main.temp)}°C`;
+    description.textContent = data.weather[0].description;
+
+    weatherDisplay.classList.remove("hidden");
+    cityInput.value = "";
+}
+
+function showLoading() {
+    loading.classList.remove("hidden");
+}
+
+function hideLoading() {
+    loading.classList.add("hidden");
+}
+
+function showError(message) {
+    error.textContent = message;
+    error.classList.remove("hidden");
+}
+
+function hideError() {
+    error.classList.add("hidden");
+}

@@ -119,3 +119,77 @@ function showError(message) {
 function hideError() {
     error.classList.add("hidden");
 }
+// ========== TASK 11.2: Callback Hell & Promises ==========
+
+console.log("=== TASK 11.2 PROMISES ===");
+
+// Refactored to Promises
+function getUserData(userId) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (userId > 0) {
+                resolve({ id: userId, name: "Julie", city: "Nairobi" });
+            } else {
+                reject("Invalid user ID");
+            }
+        }, 1000);
+    });
+}
+
+function getUserPosts(userId) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve([
+                { id: 1, title: "Learning JS" },
+                { id: 2, title: "Async is cool" }
+            ]);
+        }, 1000);
+    });
+}
+
+function getPostComments(postId) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve([
+                { id: 1, text: "Great post!" },
+                { id: 2, text: "Thanks for sharing" }
+            ]);
+        }, 1000);
+    });
+}
+
+// Test it - this replaces callback hell
+getUserData(1)
+   .then(user => {
+        console.log("User:", user);
+        return getUserPosts(user.id);
+    })
+   .then(posts => {
+        console.log("Posts:", posts);
+        return getPostComments(posts[0].id);
+    })
+   .then(comments => {
+        console.log("Comments:", comments);
+        console.log("Task 11.2 Done ✓");
+    })
+   .catch(error => {
+        console.error("Error:", error);
+    });
+
+// ========== TASK 11.3: Promise.all ==========
+
+console.log("=== TASK 11.3 PROMISE.ALL ===");
+
+// Fetch 3 users at same time
+const user1Promise = getUserData(1);
+const user2Promise = getUserData(2);
+const user3Promise = getUserData(3);
+
+Promise.all([user1Promise, user2Promise, user3Promise])
+   .then(users => {
+        console.log("All users loaded at once:", users);
+        console.log("Task 11.3 Done ✓");
+    })
+   .catch(error => {
+        console.error("One failed:", error);
+    });

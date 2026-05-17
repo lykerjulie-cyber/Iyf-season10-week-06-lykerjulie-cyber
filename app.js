@@ -1,3 +1,5 @@
+alert("JS loaded!");
+const API_KEY = CONFIG.API_KEY;
 const API_KEY = CONFIG.API_KEY;
 const BASE_URL = "https://api.openweathermap.org/data/2.5/weather";
 console.log("API key loaded:", API_KEY? "Yes ✓" : "No ✗");

@@ -193,3 +193,47 @@ Promise.all([user1Promise, user2Promise, user3Promise])
    .catch(error => {
         console.error("One failed:", error);
     });
+// ========== TASK 11.4: Async/Await ==========
+
+console.log("=== TASK 11.4 ASYNC/AWAIT ===");
+
+// Same functions but using async/await instead of.then()
+async function loadUserDataFlow() {
+    try {
+        console.log("Starting async flow...");
+
+        const user = await getUserData(1);
+        console.log("Step 1 - User:", user);
+
+        const posts = await getUserPosts(user.id);
+        console.log("Step 2 - Posts:", posts);
+
+        const comments = await getPostComments(posts[0].id);
+        console.log("Step 3 - Comments:", comments);
+
+        console.log("Task 11.4 Done ✓");
+        return { user, posts, comments };
+
+    } catch (error) {
+        console.error("Something failed:", error);
+    }
+}
+
+// Run it
+loadUserDataFlow();
+
+// Bonus: Async with Promise.all
+async function loadAllUsersFast() {
+    try {
+        const users = await Promise.all([
+            getUserData(1),
+            getUserData(2),
+            getUserData(3)
+        ]);
+        console.log("Async/await + Promise.all:", users);
+    } catch (error) {
+        console.error("Failed:", error);
+    }
+}
+
+loadAllUsersFast();

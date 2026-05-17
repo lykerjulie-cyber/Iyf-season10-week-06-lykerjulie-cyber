@@ -103,6 +103,41 @@ function displayWeather(data) {
     cityInput.value = "";
 }
 
+// ========== TASK 12.3: 5-DAY FORECAST ==========
+
+const forecast = document.getElementById("forecast");
+const forecastContainer = document.getElementById("forecast-container");
+
+async function getForecast(city) {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const dailyData = data.list.filter(item => item.dt_txt.includes("12:00:00"));
+        displayForecast(dailyData);
+    } catch (err) {
+        console.error("Forecast failed:", err);
+    }
+}
+
+function displayForecast(days) {
+    forecastContainer.innerHTML = "";
+    days.forEach(day => {
+        const date = new Date(day.dt * 1000);
+        const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+        const dayDiv = document.createElement("div");
+        dayDiv.className = "forecast-day";
+        dayDiv.innerHTML = `
+            <p><strong>${dayName}</strong></p>
+            <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" alt="">
+            <p>${Math.round(day.main.temp)}°C</p>
+            <p>${day.weather[0].main}</p>
+        `;
+        forecastContainer.appendChild(dayDiv);
+    });
+    forecast.classList.remove("hidden");
+}
+
 function showLoading() {
     loading.classList.remove("hidden");
 }

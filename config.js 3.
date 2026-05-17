@@ -1,5 +1,3 @@
-alert("JS loaded!");
-const API_KEY = CONFIG.API_KEY;
 const CONFIG = {
        API_KEY: "paste_your_openweathermap_key_here"
    };
